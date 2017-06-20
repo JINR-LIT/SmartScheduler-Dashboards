@@ -41,7 +41,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "hideControls": false,
+  "hideControls": true,
   "id": null,
   "links": [],
   "refresh": "5s",
@@ -82,7 +82,7 @@
           "renderer": "flot",
           "repeatIteration": 1490798451711,
           "seriesOverrides": [],
-          "span": 5,
+          "span": 3,
           "stack": false,
           "steppedLine": true,
           "targets": [
@@ -204,7 +204,7 @@
               "fill": 0
             }
           ],
-          "span": 5,
+          "span": 3,
           "stack": false,
           "steppedLine": true,
           "targets": [
@@ -319,6 +319,123 @@
               "max": null,
               "min": null,
               "show": false
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "metric"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "snmp-interface",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "hostname",
+                  "operator": "=~",
+                  "value": "/^$Hostnames$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "metric",
+                  "operator": "=~",
+                  "value": "/_bps$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Panel Title",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             }
           ]
         },
@@ -483,7 +600,7 @@
             }
           ],
           "repeatIteration": 1490798451711,
-          "span": 1,
+          "span": 2,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
@@ -933,5 +1050,5 @@
   },
   "timezone": "browser",
   "title": "Host CPU-MEM load",
-  "version": 20
+  "version": 21
 }
