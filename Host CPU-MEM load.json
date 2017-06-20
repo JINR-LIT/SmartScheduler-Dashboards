@@ -44,6 +44,7 @@
   "hideControls": false,
   "id": null,
   "links": [],
+  "refresh": "5s",
   "rows": [
     {
       "collapse": false,
@@ -103,7 +104,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_load' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_load' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -225,7 +226,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\")/1000000000 FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_used_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_used_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -263,7 +264,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\")/1000000000 FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_total_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_total_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -397,7 +398,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT last(\"value\") FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_count' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT last(\"value\") FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_count' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -507,7 +508,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT last(\"value\")/1000000000 FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_total_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT last(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_total_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -617,7 +618,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT count(value) FROM check_openvz_vm_perf WHERE \"hostname\" =~ /^$Hostnames$/ AND metric =~ /cpu_\\d+/ AND time > now() - 2m and time < now() - 1m",
+              "query": "SELECT count(value) FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND metric =~ /cpu_\\d+/ AND time > now() - 2m and time < now() - 1m",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -722,7 +723,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT last(\"value\") FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_alloc' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT last(\"value\") FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_alloc' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -831,7 +832,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT last(\"value\")/1000000000 FROM \"check_openvz_vm_perf\" WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_alloc_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT last(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_alloc_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -889,7 +890,7 @@
         "multi": true,
         "name": "Hostnames",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"check_openvz_vm_perf\" WITH KEY = \"hostname\" ",
+        "query": "SHOW TAG VALUES FROM /check_(openvz|kvm)_vm_perf/ WITH KEY = \"hostname\" ",
         "refresh": 1,
         "regex": "",
         "sort": 0,
@@ -902,7 +903,7 @@
     ]
   },
   "time": {
-    "from": "2017-04-12T08:20:00.947Z",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -932,5 +933,5 @@
   },
   "timezone": "browser",
   "title": "Host CPU-MEM load",
-  "version": 8
+  "version": 20
 }
