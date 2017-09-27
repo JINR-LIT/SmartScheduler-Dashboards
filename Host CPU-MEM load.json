@@ -87,7 +87,46 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "Load",
+              "alias": "CPU Load",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "policy": "default",
+              "query": "SELECT mean(\"value\")/100 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_load_cores' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "Allocated cores",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -104,9 +143,47 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_load' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_alloc' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
-              "refId": "A",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "CPU Count",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "policy": "default",
+              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_cpu_count' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "rawQuery": true,
+              "refId": "C",
               "resultFormat": "time_series",
               "select": [
                 [
@@ -153,10 +230,10 @@
           },
           "yaxes": [
             {
-              "format": "percent",
+              "format": "percentunit",
               "label": "Load",
               "logBase": 1,
-              "max": 100,
+              "max": null,
               "min": 0,
               "show": true
             },
@@ -209,7 +286,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "Used GiB",
+              "alias": "Used mem",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -247,7 +324,7 @@
               "tags": []
             },
             {
-              "alias": "Total GiB",
+              "alias": "Total mem",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -267,6 +344,82 @@
               "query": "SELECT mean(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_total_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "Allocated mem",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "policy": "default",
+              "query": "SELECT mean(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_alloc_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "rawQuery": true,
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "VM mem",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "policy": "default",
+              "query": "SELECT mean(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"hostname\" =~ /^$Hostnames$/ AND \"metric\"='host_mem_sum_vm_used_bytes' AND $timeFilter GROUP BY time($interval) fill(null)",
+              "rawQuery": true,
+              "refId": "D",
               "resultFormat": "time_series",
               "select": [
                 [
@@ -339,6 +492,7 @@
           },
           "lines": true,
           "linewidth": 1,
+          "links": [],
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
@@ -350,6 +504,7 @@
           "steppedLine": false,
           "targets": [
             {
+              "alias": "$tag_metric",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -407,7 +562,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Panel Title",
+          "title": "Network load",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1020,8 +1175,8 @@
     ]
   },
   "time": {
-    "from": "now-1h",
-    "to": "now"
+    "from": "now/M",
+    "to": "now/M"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1050,5 +1205,5 @@
   },
   "timezone": "browser",
   "title": "Host CPU-MEM load",
-  "version": 21
+  "version": 23
 }

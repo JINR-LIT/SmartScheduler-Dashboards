@@ -27,12 +27,6 @@
       "id": "influxdb",
       "name": "InfluxDB",
       "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "singlestat",
-      "name": "Singlestat",
-      "version": ""
     }
   ],
   "annotations": {
@@ -44,11 +38,11 @@
   "hideControls": false,
   "id": null,
   "links": [],
-  "refresh": false,
+  "refresh": "30s",
   "rows": [
     {
       "collapse": false,
-      "height": 264,
+      "height": 250,
       "panels": [
         {
           "aliasColors": {},
@@ -57,19 +51,22 @@
           "decimals": 0,
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 0,
           "grid": {},
           "id": 1,
+          "interval": ">=2m",
           "legend": {
-            "alignAsTable": false,
-            "avg": false,
+            "alignAsTable": true,
+            "avg": true,
             "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
+            "hideEmpty": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
             "show": true,
+            "sideWidth": null,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -82,12 +79,12 @@
           "renderer": "flot",
           "repeatIteration": 1490798451711,
           "seriesOverrides": [],
-          "span": 5,
+          "span": 6,
           "stack": false,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "Used CPU",
+              "alias": "Load",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -98,13 +95,13 @@
                 },
                 {
                   "params": [
-                    "null"
+                    "0"
                   ],
                   "type": "fill"
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\") / 100 FROM /check_.*_vm_perf/ WHERE \"metric\" =~ /^cpu_$vm$/ AND $timeFilter GROUP BY metric, time($interval) fill(null)",
+              "query": "SELECT sum(\"mean\")/100.0 FROM (SELECT mean(\"value\") FROM \"check_[[virt]]_vm_perf\" WHERE \"metric\"='host_cpu_load_cores' AND $timeFilter GROUP BY time($interval), hostname fill(none)) WHERE $timeFilter GROUP BY time($interval)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -125,7 +122,7 @@
               "tags": []
             },
             {
-              "alias": "Allocated CPU",
+              "alias": "Allocated cores",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -142,7 +139,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"metric\" =~ /^num_cpu_$vm$/ AND $timeFilter GROUP BY metric, time($interval) fill(null)",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") FROM /check_[[virt]]_vm_perf/ WHERE \"metric\"='host_cpu_alloc' AND $timeFilter GROUP BY time($interval), hostname fill(none)) WHERE $timeFilter GROUP BY time($interval)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -161,20 +158,50 @@
                 ]
               ],
               "tags": []
-            }
-          ],
-          "thresholds": [
+            },
             {
-              "colorMode": "custom",
-              "fill": true,
-              "fillColor": "rgba(216, 200, 27, 0.38)",
-              "op": "gt",
-              "value": 100
+              "alias": "Available cores",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "policy": "default",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") FROM /check_[[virt]]_vm_perf/ WHERE \"metric\"='host_cpu_count' AND $timeFilter GROUP BY time($interval), hostname fill(none)) WHERE $timeFilter GROUP BY time($interval)",
+              "rawQuery": true,
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "VM $vm:  CPU Load",
+          "title": "CPU Load",
           "tooltip": {
             "msResolution": true,
             "shared": true,
@@ -191,7 +218,7 @@
           },
           "yaxes": [
             {
-              "format": "percentunit",
+              "format": "none",
               "label": "Load",
               "logBase": 1,
               "max": null,
@@ -214,17 +241,20 @@
           "datasource": "${DS_INFLUXDB}",
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 0,
           "grid": {},
           "id": 2,
+          "interval": ">=2m",
           "legend": {
-            "avg": false,
+            "alignAsTable": true,
+            "avg": true,
             "current": false,
-            "max": false,
-            "min": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true
           },
           "lines": true,
           "linewidth": 1,
@@ -238,8 +268,7 @@
           "repeatIteration": 1490798451711,
           "seriesOverrides": [
             {
-              "alias": "Total GiB",
-              "fill": 0
+              "alias": "Total GiB"
             }
           ],
           "span": 6,
@@ -247,7 +276,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "Used memory",
+              "alias": "Used",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -264,7 +293,7 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"metric\" =~ /^mem_b_$vm$/ AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") from \"check_[[virt]]_vm_perf\" WHERE \"metric\"='host_mem_used_bytes' AND $timeFilter GROUP BY hostname, time($interval) fill(null)) WHERE $timeFilter GROUP BY time($interval)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -285,7 +314,7 @@
               "tags": []
             },
             {
-              "alias": "Allocated memory",
+              "alias": "Available",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -302,9 +331,85 @@
                 }
               ],
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"metric\" =~ /^mem_total_$vm$/ AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") from \"check_[[virt]]_vm_perf\" WHERE \"metric\"='host_mem_total_bytes' AND $timeFilter GROUP BY hostname, time($interval) fill(null)) WHERE $timeFilter GROUP BY time($interval)",
               "rawQuery": true,
               "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "Allocated",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "policy": "default",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") from \"check_[[virt]]_vm_perf\" WHERE \"metric\"='host_mem_alloc_bytes' AND $timeFilter GROUP BY hostname, time($interval) fill(null)) WHERE $timeFilter GROUP BY time($interval)",
+              "rawQuery": true,
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "VM",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "policy": "default",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") from \"check_[[virt]]_vm_perf\" WHERE \"metric\"='host_mem_sum_vm_used_bytes' AND $timeFilter GROUP BY hostname, time($interval) fill(null)) WHERE $timeFilter GROUP BY time($interval)",
+              "rawQuery": true,
+              "refId": "D",
               "resultFormat": "time_series",
               "select": [
                 [
@@ -326,7 +431,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "VM $vm: MEM Load",
+          "title": "Memory",
           "tooltip": {
             "msResolution": true,
             "shared": true,
@@ -343,7 +448,7 @@
           },
           "yaxes": [
             {
-              "format": "decbytes",
+              "format": "bytes",
               "label": "",
               "logBase": 1,
               "max": null,
@@ -359,228 +464,207 @@
               "show": false
             }
           ]
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "datasource": "${DS_INFLUXDB}",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "70",
-          "id": 3,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "span": 1,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "alias": "Allocated CPU",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "policy": "default",
-              "query": "SELECT mean(\"value\") FROM /check_.*_vm_perf/ WHERE \"metric\" =~ /^num_cpu_$vm$/ AND $timeFilter GROUP BY metric, time($interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "thresholds": "",
-          "title": "VM $vm: alloc_cpu",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "datasource": "${DS_INFLUXDB}",
-          "format": "short",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "70",
-          "id": 5,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "GiB",
-          "postfixFontSize": "70%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "span": 1,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "alias": "Allocated memory",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "policy": "default",
-              "query": "SELECT mean(\"value\")/1000000000 FROM /check_.*_vm_perf/ WHERE \"metric\" =~ /^mem_total_$vm$/ AND $timeFilter GROUP BY time($interval) fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "thresholds": "",
-          "title": "VM $vm: alloc_mem",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
         }
       ],
-      "repeat": "vm",
+      "repeat": "virt",
       "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Row",
-      "titleSize": "h6"
+      "showTitle": true,
+      "title": "$virt",
+      "titleSize": "h4"
+    },
+    {
+      "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 0,
+          "id": 8,
+          "interval": "",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "network in",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "metric"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "snmp-interface",
+              "policy": "default",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") FROM \"snmp-interface\" WHERE \"metric\" =~ /_in_bps$/ AND $timeFilter GROUP BY hostname, time($__interval)) WHERE $timeFilter GROUP BY time($__interval)",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "hostname",
+                  "operator": "=~",
+                  "value": "/^$Hostnames$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "metric",
+                  "operator": "=~",
+                  "value": "/_bps$/"
+                }
+              ]
+            },
+            {
+              "alias": "network out",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "metric"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "snmp-interface",
+              "policy": "default",
+              "query": "SELECT sum(\"mean\") FROM (SELECT mean(\"value\") FROM \"snmp-interface\" WHERE \"metric\" =~ /_out_bps$/ AND $timeFilter GROUP BY hostname, time($__interval)) WHERE $timeFilter GROUP BY time($__interval)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "hostname",
+                  "operator": "=~",
+                  "value": "/^$Hostnames$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "metric",
+                  "operator": "=~",
+                  "value": "/_bps$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network load",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "network",
+      "titleSize": "h4"
     }
   ],
   "schemaVersion": 14,
@@ -590,23 +674,33 @@
     "list": [
       {
         "allValue": null,
-        "current": {},
-        "datasource": "${DS_INFLUXDB}",
+        "current": {
+          "tags": [],
+          "text": "openvz + kvm",
+          "value": [
+            "openvz",
+            "kvm"
+          ]
+        },
         "hide": 0,
         "includeAll": false,
-        "label": null,
+        "label": "Virtualization",
         "multi": true,
-        "name": "vm",
-        "options": [],
-        "query": "SHOW TAG VALUES FROM /check_(openvz|kvm)_vm_perf/ WITH KEY = \"metric\" ",
-        "refresh": 1,
-        "regex": "/cpu_(\\d+)$/",
-        "sort": 3,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "name": "virt",
+        "options": [
+          {
+            "selected": true,
+            "text": "openvz",
+            "value": "openvz"
+          },
+          {
+            "selected": true,
+            "text": "kvm",
+            "value": "kvm"
+          }
+        ],
+        "query": "openvz, kvm",
+        "type": "custom"
       }
     ]
   },
@@ -640,6 +734,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "VM CPU-MEM load",
-  "version": 18
+  "title": "Total CPU-MEM load",
+  "version": 16
 }

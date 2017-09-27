@@ -38,6 +38,7 @@
   "hideControls": false,
   "id": null,
   "links": [],
+  "refresh": "30m",
   "rows": [
     {
       "collapse": false,
@@ -81,7 +82,7 @@
               "groupBy": [
                 {
                   "params": [
-                    "1h"
+                    "auto"
                   ],
                   "type": "time"
                 },
@@ -93,7 +94,7 @@
                 },
                 {
                   "params": [
-                    "none"
+                    "null"
                   ],
                   "type": "fill"
                 }
@@ -101,8 +102,8 @@
               "hide": false,
               "measurement": "snmp-interface",
               "policy": "one_year_only",
-              "query": "SELECT mean(\"value\"), max(\"value\") FROM \"one_year_only\".\"snmp-interface\" WHERE \"hostname\" =~ /^$Hostnames$/ AND $timeFilter GROUP BY time(1m), \"metric\" fill(none)",
-              "rawQuery": true,
+              "query": "SELECT mean(\"value\"), max(\"value\") FROM \"one_year_only\".\"snmp-interface\" WHERE \"hostname\" =~ /^$Hostnames$/ AND $timeFilter GROUP BY time($__interval), \"metric\" fill(none)",
+              "rawQuery": false,
               "refId": "B",
               "resultFormat": "time_series",
               "select": [
@@ -160,7 +161,7 @@
           },
           "yaxes": [
             {
-              "format": "Bps",
+              "format": "bps",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -214,8 +215,8 @@
     ]
   },
   "time": {
-    "from": "now-30m",
-    "to": "now"
+    "from": "now/M",
+    "to": "now/M"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -244,5 +245,5 @@
   },
   "timezone": "browser",
   "title": "net i/o",
-  "version": 10
+  "version": 17
 }

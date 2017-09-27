@@ -81,7 +81,7 @@
               "groupBy": [
                 {
                   "params": [
-                    "1h"
+                    "auto"
                   ],
                   "type": "time"
                 },
@@ -218,7 +218,7 @@
               "groupBy": [
                 {
                   "params": [
-                    "1h"
+                    "auto"
                   ],
                   "type": "time"
                 },
@@ -354,8 +354,8 @@
     ]
   },
   "time": {
-    "from": "now-7d",
-    "to": "now"
+    "from": "now/M",
+    "to": "now/M"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -384,5 +384,5 @@
   },
   "timezone": "browser",
   "title": "AVG + MAX graphs",
-  "version": 5
+  "version": 7
 }

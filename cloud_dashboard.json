@@ -334,8 +334,8 @@
     ]
   },
   "time": {
-    "from": "now-6h",
-    "to": "now"
+    "from": "now/M",
+    "to": "now/M"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -364,5 +364,5 @@
   },
   "timezone": "browser",
   "title": "cloud_dashboard",
-  "version": 47
+  "version": 51
 }
