@@ -52,7 +52,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1532023013187,
+  "iteration": 1532023012870,
   "links": [],
   "panels": [
     {
@@ -646,12 +646,32 @@
         "current": {},
         "datasource": "${DS_INFLUXDB}",
         "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "host",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM /check_(openvz|kvm)_vm_perf/ WITH KEY = \"hostname\" ",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": true,
         "name": "vm",
         "options": [],
-        "query": "SHOW TAG VALUES FROM /check_(openvz|kvm)_vm_perf/ WITH KEY = \"metric\" ",
+        "query": "SHOW TAG VALUES FROM /check_(openvz|kvm)_vm_perf/ WITH KEY = \"metric\"  WHERE \"hostname\" =~ /^$host$/",
         "refresh": 1,
         "regex": "/cpu_(\\d+)$/",
         "sort": 3,
@@ -693,7 +713,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "VM CPU-MEM load",
-  "uid": "000000019",
-  "version": 19
+  "title": "VM CPU-MEM per host",
+  "uid": "000000032",
+  "version": 1
 }
